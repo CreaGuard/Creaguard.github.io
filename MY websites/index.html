@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator’s Toolkit - Powered by CreaGuard</title>
+    <link rel="icon" type="image/png" href="https://via.placeholder.com/32x32.png?text=🛠️">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a23;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        header {
+            background: linear-gradient(120deg, #1e3c72, #2a5298);
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            animation: slideIn 1s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1300px; /* Widened for better spacing */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin: 0;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.7);
+        }
+        nav a {
+            color: #00d4ff;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 600;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        nav a:hover {
+            color: #fff;
+            transform: scale(1.1);
+        }
+        .hero {
+            position: relative;
+            height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3); /* Subtle overlay for text contrast */
+        }
+        .hero video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.8);
+        }
+        .hero h2 {
+            font-size: 3rem;
+            margin: 0;
+            animation: fadeInUp 1.5s ease-out;
+        }
+        .hero p {
+            font-size: 1.5rem;
+            animation: fadeInUp 2s ease-out;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .container {
+            max-width: 1300px; /* Widened for better spacing */
+            margin: 0 auto;
+            padding: 40px 20px; /* More padding for breathing room */
+            position: relative;
+        }
+        .intro-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        .search-bar {
+            margin: 40px 0;
+            text-align: center;
+        }
+        #search {
+            padding: 15px;
+            width: 60%;
+            max-width: 500px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+            transition: width 0.5s ease, box-shadow 0.3s ease;
+        }
+        #search:focus {
+            width: 70%;
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.8);
+            outline: none;
+        }
+        .filters {
+            margin: 40px 0;
+            text-align: center;
+        }
+        .filters button {
+            padding: 12px 25px;
+            margin: 10px;
+            border: none;
+            background: linear-gradient(45deg, #00d4ff, #007BFF);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+            transition: transform 0.3s ease;
+        }
+        .filters button:hover {
+            transform: scale(1.1);
+        }
+        .category-section {
+            margin-bottom: 60px; /* More spacing between sections */
+            position: relative;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+        .category-section h2, .category-section h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px; /* Increased for breathing room */
+        }
+        .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 212, 255, 0.2));
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        }
+        .card i {
+            margin-right: 15px;
+            color: #00d4ff;
+            font-size: 1.5rem;
+        }
+        .card a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .card a:hover {
+            color: #00d4ff;
+        }
+        .card p {
+            color: #e0e0e0; /* Brighter for readability */
+            font-size: 0.9rem;
+            margin: 10px 0 0;
+        }
+        .cta {
+            text-align: center;
+            margin: 60px 0;
+        }
+        .cta a {
+            background: linear-gradient(45deg, #00d4ff, #007BFF); /* Matches cyan theme */
+            color: #fff;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            margin: 15px;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.5);
+            transition: transform 0.3s ease;
+        }
+        .cta a:hover {
+            transform: scale(1.1);
+        }
+        footer {
+            background: linear-gradient(120deg, #1e3c72, #2a5298);
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+        }
+        footer p {
+            margin: 0;
+            color: #e0e0e0; /* Brighter for readability */
+        }
+        footer a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: #fff;
+        }
+        /* Glowing yellow for Notion link and Gmail */
+        .glow-link {
+            color: #ffff00;
+            text-shadow: 0 0 5px #ffff00, 0 0 10px #ffff00, 0 0 15px #ffff00;
+            animation: glowPulse 1.5s infinite ease-in-out;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .glow-link:hover {
+            color: #ffff99;
+            text-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00, 0 0 30px #ffff00;
+        }
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor; }
+            50% { text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 25px currentColor; }
+        }
+        /* Back to Top Button for Mobile */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00d4ff;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-weight: 600;
+            display: none;
+            transition: background 0.3s ease;
+        }
+        .back-to-top:hover {
+            background: #007BFF;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            header h1 { font-size: 2rem; }
+            .nav-container { flex-direction: column; }
+            nav { margin-top: 10px; }
+            nav a { margin: 0 10px; }
+            .hero { height: 40vh; }
+            .hero h2 { font-size: 2rem; }
+            #search { width: 80%; }
+            .back-to-top { display: block; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <h1>Creator’s Toolkit</h1>
+            <nav>
+                <a href="#ai-tools">AI Tools</a>
+                <a href="#video-tools">Video Tools</a>
+                <a href="#closing-notes">Closing Notes</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero">
+        <!-- Local video path - will work locally; upload to server and adjust path when hosting online -->
+        <video autoplay muted loop>
+            <source src="D:\AMAZON DEMO\New folder\Untitled design (1).mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <h2>Unleash Your Creativity with Free Tools</h2>
+        <p>Powered by CreaGuard – Dive into Motion & Magic Below!</p>
+    </div>
+
+    <div class="container">
+        <div class="intro-section">
+            <p>Unlock your creative potential with Creator’s Toolkit—a curated set of cutting-edge resources, templates, and tools powered by CreaGuard. Whether you’re a designer, writer, or entrepreneur, dive into our modern collection below and supercharge your workflow!</p>
+            <p><a href="https://laser-leopon-8f0.notion.site/Creator-s-Toolkit-Your-one-stop-solution-for-creative-success-Powered-by-CreaGuard-141044e641c380a5bf89c1655421de9b?pvs=4" class="glow-link">Explore our Notion hub</a> for more inspiration.</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search tools..." onkeyup="searchTools()">
+        </div>
+
+        <div class="filters">
+            <button onclick="filterCategory('all')">All</button>
+            <button onclick="filterCategory('ai')">AI Tools</button>
+            <button onclick="filterCategory('video')">Video Tools</button>
+            <button onclick="filterCategory('graphic')">Graphic Design</button>
+        </div>
+
+        <div class="category-section" id="ai-tools" data-category="ai">
+            <h2>Websites & Links Database</h2>
+
+            <div class="category-section" data-category="ai">
+                <h3>🤖 Free AI Idea Generation & Brainstorming Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-brain"></i><a href="https://chatgpt.com/" target="_blank">ChatGPT</a></div>
+                    <div class="card"><i class="fas fa-brain"></i><a href="https://www.copy.ai/tools" target="_blank">Copy.ai Tools</a></div>
+                    <div class="card"><i class="fas fa-brain"></i><a href="https://rytr.me/" target="_blank">Rytr</a></div>
+                    <div class="card"><i class="fas fa-brain"></i><a href="https://simplified.com/" target="_blank">Simplified</a></div>
+                    <div class="card"><i class="fas fa-brain"></i><a href="https://deepai.org/" target="_blank">DeepAI</a></div>
+                </div>
+                <p>These free AI-powered tools are designed to help content creators brainstorm ideas, generate content, and organize thoughts effortlessly.</p>
+            </div>
+
+            <div class="category-section" data-category="ai">
+                <h3>💡 Free Idea Generation & Brainstorming Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-lightbulb"></i><a href="https://miro.com/" target="_blank">Miro</a></div>
+                    <div class="card"><i class="fas fa-lightbulb"></i><a href="https://coggle.it/" target="_blank">Coggle</a></div>
+                    <div class="card"><i class="fas fa-lightbulb"></i><a href="https://milanote.com/" target="_blank">Milanote</a></div>
+                    <div class="card"><i class="fas fa-lightbulb"></i><a href="https://www.mindmeister.com/" target="_blank">MindMeister</a></div>
+                    <div class="card"><i class="fas fa-lightbulb"></i><a href="https://stormboard.com/" target="_blank">Stormboard</a></div>
+                </div>
+                <p>These tools support various aspects of content creation, from generating ideas and organizing tasks to collaborating with others.</p>
+            </div>
+
+            <div class="category-section" data-category="ai">
+                <h3>🤖 AI-Powered Research Tools & Platforms</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-search"></i><a href="https://alsoasked.com/" target="_blank">AlsoAsked</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://answerthepublic.com/" target="_blank">AnswerThePublic</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://www.perplexity.ai/" target="_blank">Perplexity AI</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://grok.com/?referrer=website" target="_blank">Grok</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://scholar.google.com/" target="_blank">Google Scholar</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://web.archive.org/" target="_blank">Wayback Machine</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://consensus.app/search/" target="_blank">Consensus</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://chatgpt.com/g/g-kZ0eYXlJe-scholar-gpt" target="_blank">Scholar GPT</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://chatgpt.com/g/g-NgAcklHd8-scispace" target="_blank">SciSpace</a></div>
+                </div>
+                <p>Research Methods: 5W1H Analysis (Who, What, When, Where, Why, How), Horizontal Reasoning (Broad exploration), Vertical Reasoning (Deep dive).</p>
+            </div>
+
+            <div class="category-section" data-category="ai">
+                <h3>📝 Scripting Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-pen"></i><a href="https://www.squibler.io/ai-script-generator" target="_blank">Squibler AI Script Generator</a></div>
+                    <div class="card"><i class="fas fa-pen"></i><a href="https://www.grammarly.com/" target="_blank">Grammarly</a></div>
+                    <div class="card"><i class="fas fa-pen"></i><a href="https://chatgpt.com/g/g-B3hgivKK9-write-for-me" target="_blank">Write For Me (ChatGPT)</a></div>
+                    <div class="card"><i class="fas fa-pen"></i><a href="https://toolbaz.com/writer/ai-script-generator" target="_blank">Toolbaz AI Script Generator</a></div>
+                </div>
+                <p>These tools help creators with content writing, script creation for videos, and even automation of repetitive tasks.</p>
+            </div>
+
+            <div class="category-section" data-category="graphic">
+                <h3>🎨 Free AI Image Generation Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://glif.app/@001/glifs/clzgvha5a00041aepvz2h4zi4" target="_blank">Glif</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://deepdreamgenerator.com/" target="_blank">DeepDream Generator</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://labs.google/fx/tools/image-fx" target="_blank">Google Image FX</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://leonardo.ai/" target="_blank">Leonardo AI</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://www.piclumen.com/" target="_blank">PicLumen</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://designer.microsoft.com/" target="_blank">Microsoft Designer</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://ideogram.ai/" target="_blank">Ideogram</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://www.meta.ai/" target="_blank">Meta AI</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://lexica.art/" target="_blank">Lexica</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://firefly.adobe.com/" target="_blank">Adobe Firefly</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://cococlip.ai/features/image-to-prompt" target="_blank">CocoClip AI</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://www.aiease.ai/" target="_blank">AIEase</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://clipdrop.co/" target="_blank">Clipdrop</a></div>
+                    <div class="card"><i class="fas fa-paint-brush"></i><a href="https://smailpro.com/" target="_blank">SmailPro (Temp Mail)</a></div>
+                </div>
+                <p>Transform your creative vision into reality with free AI-powered image generation tools. Use tempmails to reset free credits. NOTE: You may need a VPN for some websites as they’re not available in all countries.</p>
+            </div>
+
+            <div class="category-section" id="video-tools" data-category="video">
+                <h3>🎥 Free AI Image-to-Video Generation Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-video"></i><a href="https://pictory.ai/" target="_blank">Pictory</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://runwayml.com/" target="_blank">RunwayML</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://kaiber.ai/" target="_blank">Kaiber</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://www.deepmotion.com/" target="_blank">DeepMotion</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://animoto.com/" target="_blank">Animoto</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://www.krea.ai/" target="_blank">Krea AI</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://lumalabs.ai/dream-machine/creations" target="_blank">Luma Labs Dream Machine</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://hailuoai.video/" target="_blank">Hailuo AI</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://pikartai.com/" target="_blank">Pikart AI</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://www.klingai.com/" target="_blank">Kling AI</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://haiper.ai/" target="_blank">Haiper</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://app.pixverse.ai/" target="_blank">Pixverse</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://www.futuretools.io/?tags-n5zn=generative-video&pricing-model=free%7Cfreemium" target="_blank">FutureTools Generative Video</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://vidful.ai/" target="_blank">Vidful AI</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://coverr.co/tools/kling" target="_blank">Coverr Kling</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://smailpro.com/" target="_blank">SmailPro (Temp Mail)</a></div>
+                </div>
+                <p>Transform static images into dynamic, engaging videos effortlessly with AI tools. Use tempmails to reset free credits.</p>
+            </div>
+
+            <div class="category-section" data-category="ai">
+                <h3>🎙️ Free AI Tools for Script-to-Voiceover</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-microphone"></i><a href="https://elevenlabs.io/" target="_blank">ElevenLabs</a></div>
+                    <div class="card"><i class="fas fa-microphone"></i><a href="https://speechify.com/" target="_blank">Speechify</a></div>
+                    <div class="card"><i class="fas fa-microphone"></i><a href="https://www.desivocal.com/" target="_blank">DesiVocal</a></div>
+                    <div class="card"><i class="fas fa-microphone"></i><a href="https://www.naturalreaders.com/" target="_blank">NaturalReaders</a></div>
+                    <div class="card"><i class="fas fa-microphone"></i><a href="https://www.resemble.ai/" target="_blank">Resemble AI</a></div>
+                    <div class="card"><i class="fas fa-microphone"></i><a href="https://play.ht/text-to-speech/" target="_blank">Play.ht</a></div>
+                    <div class="card"><i class="fas fa-microphone"></i><a href="https://murf.ai/text-to-speech" target="_blank">Murf AI</a></div>
+                </div>
+                <p>AI-powered voiceover tools allow creators to convert written scripts into lifelike voiceovers.</p>
+            </div>
+
+            <div class="category-section" data-category="graphic">
+                <h3>🖼️ Stock Videos & Images (License Free)</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-image"></i><a href="https://unsplash.com/" target="_blank">Unsplash</a></div>
+                    <div class="card"><i class="fas fa-image"></i><a href="https://www.pexels.com/" target="_blank">Pexels</a></div>
+                    <div class="card"><i class="fas fa-image"></i><a href="https://pixabay.com/" target="_blank">Pixabay</a></div>
+                    <div class="card"><i class="fas fa-image"></i><a href="https://kaboompics.com/" target="_blank">Kaboompics</a></div>
+                    <div class="card"><i class="fas fa-image"></i><a href="https://www.freeimages.com/" target="_blank">FreeImages</a></div>
+                    <div class="card"><i class="fas fa-image"></i><a href="https://www.lifeofpix.com/" target="_blank">Life of Pix</a></div>
+                    <div class="card"><i class="fas fa-image"></i><a href="https://www.lummi.ai/" target="_blank">Lummi</a></div>
+                    <div class="card"><i class="fas fa-image"></i><a href="https://texturelabs.org/" target="_blank">TextureLabs</a></div>
+                </div>
+                <p>Collection of websites offering free stock photos, videos, and images with no copyright restrictions.</p>
+            </div>
+
+            <div class="category-section" data-category="video">
+                <h3>🎥 Free Stock Videos & Footage (Copyright Free)</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-film"></i><a href="https://mixkit.co/" target="_blank">Mixkit</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://www.videvo.net/" target="_blank">Videvo</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://coverr.co/" target="_blank">Coverr</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://www.freepik.com/" target="_blank">Freepik</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://www.vidsplay.com/" target="_blank">Vidsplay</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://mazwai.com/stock-video-footage" target="_blank">Mazwai</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://dareful.com/" target="_blank">Dareful</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://www.videezy.com/" target="_blank">Videezy</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="http://pikwizard.com/" target="_blank">Pikwizard</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://www.slidescarnival.com/" target="_blank">SlidesCarnival</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://www.flaticon.com/" target="_blank">Flaticon</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://icons8.com/" target="_blank">Icons8</a></div>
+                    <div class="card"><i class="fas fa-film"></i><a href="https://thenounproject.com/browse/icons/term/free/" target="_blank">The Noun Project</a></div>
+                </div>
+                <p>Collection of websites offering free stock videos and footage that can be used without copyright restrictions.</p>
+            </div>
+
+            <div class="category-section" data-category="audio">
+                <h3>🎵 Free Music & Sound Effects (Royalty Free)</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-music"></i><a href="https://pixabay.com/music/" target="_blank">Pixabay Music</a></div>
+                    <div class="card"><i class="fas fa-music"></i><a href="https://freemusicarchive.org/" target="_blank">Free Music Archive</a></div>
+                    <div class="card"><i class="fas fa-music"></i><a href="https://freesound.org/search/?s=Date+added+(newest+first)&g=1" target="_blank">Freesound</a></div>
+                    <div class="card"><i class="fas fa-music"></i><a href="https://www.chosic.com/free-music/all/" target="_blank">Chosic</a></div>
+                    <div class="card"><i class="fas fa-music"></i><a href="https://www.bensound.com/free-music-for-videos" target="_blank">Bensound</a></div>
+                    <div class="card"><i class="fas fa-music"></i><a href="https://creatormix.com/" target="_blank">CreatorMix</a></div>
+                    <div class="card"><i class="fas fa-music"></i><a href="https://uppbeat.io/" target="_blank">Uppbeat</a></div>
+                    <div class="card"><i class="fas fa-music"></i><a href="https://www.zapsplat.com/" target="_blank">ZapSplat</a></div>
+                    <div class="card"><i class="fas fa-music"></i><a href="https://ncs.io/" target="_blank">NCS</a></div>
+                    <div class="card"><i class="fas fa-music"></i><a href="https://incompetech.com/music/royalty-free/music.html" target="_blank">Incompetech</a></div>
+                </div>
+                <p>Free background music, sound effects, and audio tracks. Some may need attributes in the description.</p>
+            </div>
+
+            <div class="category-section" data-category="video">
+                <h3>🎬 Free Video Editing Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-video"></i><a href="https://www.blackmagicdesign.com/products/davinciresolve" target="_blank">DaVinci Resolve</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://www.capcut.com/" target="_blank">CapCut</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://fxhome.com/product/hitfilm" target="_blank">HitFilm</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://www.flexclip.com/" target="_blank">FlexClip</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://clipchamp.com/en/windows-video-editor/" target="_blank">Clipchamp</a></div>
+                    <div class="card"><i class="fas fa-video"></i><a href="https://eyecannndy.com/" target="_blank">EyeCanndy</a></div>
+                </div>
+                <p>Free video editing tools. NOTE: Some may require a VPN connection.</p>
+            </div>
+
+            <div class="category-section" data-category="audio">
+                <h3>🎧 Free Audio Editing Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-volume-up"></i><a href="https://www.audacityteam.org/" target="_blank">Audacity</a></div>
+                    <div class="card"><i class="fas fa-volume-up"></i><a href="https://podcast.adobe.com/enhance/?ref=brigadeweb" target="_blank">Adobe Podcast Enhance</a></div>
+                    <div class="card"><i class="fas fa-volume-up"></i><a href="https://www.bandlab.com/" target="_blank">BandLab</a></div>
+                    <div class="card"><i class="fas fa-volume-up"></i><a href="https://www.looperman.com/" target="_blank">Looperman</a></div>
+                    <div class="card"><i class="fas fa-volume-up"></i><a href="https://sunnoai.com/" target="_blank">Sunno AI</a></div>
+                    <div class="card"><i class="fas fa-volume-up"></i><a href="https://huggingface.co/spaces/facebook/MusicGen" target="_blank">MusicGen</a></div>
+                </div>
+                <p>Essential tools for editing or enhancing audio for podcasts, music, or video content.</p>
+            </div>
+
+            <div class="category-section" data-category="graphic">
+                <h3>🖌️ Free Graphic Design Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://www.canva.com/" target="_blank">Canva</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://www.photopea.com/" target="_blank">Photopea</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://forcreators.com/apps/graphics/crello/" target="_blank">Crello (VistaCreate)</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://www.figma.com/" target="_blank">Figma</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="http://www.thegridsystem.org/" target="_blank">The Grid System</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="http://remove.bg/" target="_blank">Remove.bg</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://coolors.co/" target="_blank">Coolors</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://colourcontrast.cc/" target="_blank">Colour Contrast</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://colorhunt.co/" target="_blank">Color Hunt</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://www.canva.com/colors/color-wheel/" target="_blank">Canva Color Wheel</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://uncut.wtf/" target="_blank">Uncut</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://shots.so/" target="_blank">Shots.so</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://www.aiease.ai/" target="_blank">AIEase</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://thumbsup.tv/" target="_blank">ThumbsUp</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://brandingstyleguides.com/" target="_blank">Branding Style Guides</a></div>
+                    <div class="card"><i class="fas fa-paint-roller"></i><a href="https://in.pinterest.com/" target="_blank">Pinterest</a></div>
+                </div>
+                <p>Design logos, banners, and thumbnails for social media or personal use. Use Pinterest for inspiration.</p>
+            </div>
+
+            <div class="category-section" data-category="storage">
+                <h3>📂☁️ Best Free Cloud Storage Platforms</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://www.playbook.com/" target="_blank">Playbook</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://drive.google.com/drive/quota" target="_blank">Google Drive</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://www.dropbox.com/" target="_blank">Dropbox</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://onedrive.live.com/" target="_blank">OneDrive</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://www.box.com/" target="_blank">Box</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://www.pcloud.com/" target="_blank">pCloud</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://mega.nz/" target="_blank">Mega</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://disk.yandex.com/" target="_blank">Yandex Disk</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://www.icedrive.net/" target="_blank">Icedrive</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://www.terabox.com/" target="_blank">TeraBox</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://www.mediafire.com/" target="_blank">MediaFire</a></div>
+                    <div class="card"><i class="fas fa-cloud"></i><a href="https://degoo.com/" target="_blank">Degoo</a></div>
+                </div>
+                <p>Reliable, secure space to store, access, and share files seamlessly.</p>
+            </div>
+
+            <div class="category-section" data-category="seo">
+                <h3>🔍 SEO Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-search"></i><a href="https://keywordtool.io/" target="_blank">Keyword Tool</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://neilpatel.com/ubersuggest/" target="_blank">Ubersuggest</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://yoast.com/wordpress/plugins/seo/" target="_blank">Yoast SEO</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://moz.com/" target="_blank">Moz</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://tuberanker.com/" target="_blank">TubeRanker</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://www.tunepocket.com/youtube-tags-inspector/?srsltid=AfmBOorUN9FS9fx3Z0LK_0cgXbQWlFEHNR_40Hdfff5mCKU1uz0ZQhjV" target="_blank">TunePocket YouTube Tags Inspector</a></div>
+                    <div class="card"><i class="fas fa-search"></i><a href="https://tuberanker.com/youtube-tag-extractor" target="_blank">TubeRanker Tag Extractor</a></div>
+                </div>
+                <p>Optimize content to drive organic traffic to websites, blogs, or videos.</p>
+            </div>
+
+            <div class="category-section" data-category="analytics">
+                <h3>📊 Analytics Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-chart-line"></i><a href="https://trends.google.com/trends/" target="_blank">Google Trends</a></div>
+                    <div class="card"><i class="fas fa-chart-line"></i><a href="https://studio.youtube.com/" target="_blank">YouTube Studio</a></div>
+                    <div class="card"><i class="fas fa-chart-line"></i><a href="https://socialblade.com/" target="_blank">SocialBlade</a></div>
+                    <div class="card"><i class="fas fa-chart-line"></i><a href="https://search.google.com/search-console/about" target="_blank">Google Search Console</a></div>
+                    <div class="card"><i class="fas fa-chart-line"></i><a href="https://vidiq.com/" target="_blank">VidIQ</a></div>
+                </div>
+                <p>Track content performance, audience engagement, and platform impact.</p>
+            </div>
+
+            <div class="category-section" data-category="social">
+                <h3>💬 Free Social Media Management Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-share-alt"></i><a href="https://buffer.com/" target="_blank">Buffer</a></div>
+                    <div class="card"><i class="fas fa-share-alt"></i><a href="https://hootsuite.com/" target="_blank">Hootsuite</a></div>
+                    <div class="card"><i class="fas fa-share-alt"></i><a href="https://www.zoho.com/social/" target="_blank">Zoho Social</a></div>
+                    <div class="card"><i class="fas fa-share-alt"></i><a href="https://later.com/" target="_blank">Later</a></div>
+                    <div class="card"><i class="fas fa-share-alt"></i><a href="https://tweetdeck.twitter.com/" target="_blank">TweetDeck</a></div>
+                    <div class="card"><i class="fas fa-share-alt"></i><a href="https://www.tubebuddy.com/" target="_blank">TubeBuddy</a></div>
+                    <div class="card"><i class="fas fa-share-alt"></i><a href="https://socialbee.io/" target="_blank">SocialBee</a></div>
+                </div>
+                <p>Optimize video content, schedule uploads, and enhance channel growth.</p>
+            </div>
+
+            <div class="category-section" data-category="collaboration">
+                <h3>🤝 Free Collaboration Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-users"></i><a href="https://trello.com/" target="_blank">Trello</a></div>
+                    <div class="card"><i class="fas fa-users"></i><a href="https://slack.com/" target="_blank">Slack</a></div>
+                    <div class="card"><i class="fas fa-users"></i><a href="https://workspace.google.com/" target="_blank">Google Workspace</a></div>
+                    <div class="card"><i class="fas fa-users"></i><a href="https://asana.com/" target="_blank">Asana</a></div>
+                    <div class="card"><i class="fas fa-users"></i><a href="https://www.notion.so/" target="_blank">Notion</a></div>
+                    <div class="card"><i class="fas fa-users"></i><a href="https://discord.com/" target="_blank">Discord</a></div>
+                    <div class="card"><i class="fas fa-users"></i><a href="https://www.microsoft.com/en/microsoft-teams/group-chat-software" target="_blank">Microsoft Teams</a></div>
+                </div>
+                <p>Enhance teamwork with these free collaboration tools.</p>
+            </div>
+
+            <div class="category-section" data-category="website">
+                <h3>🌐 Free Website Builders</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://carrd.co/" target="_blank">Carrd</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://www.wix.com/" target="_blank">Wix</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://sites.google.com/" target="_blank">Google Sites</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://wordpress.com/free/" target="_blank">WordPress.com</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://www.weebly.com/in" target="_blank">Weebly</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://www.canva.com/website-builder/" target="_blank">Canva Website Builder</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://www.odoo.com/app/website" target="_blank">Odoo Website</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://www.deepseek.com/" target="_blank">DeepSeek</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://www.blackbox.ai/" target="_blank">Blackbox AI</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a></div>
+                    <div class="card"><i class="fas fa-globe"></i><a href="https://grok.com/?referrer=website" target="_blank">Grok</a></div>
+                </div>
+                <p>Build portfolios, blogs, or multimedia showcases with these free tools.</p>
+            </div>
+
+            <div class="category-section" data-category="productivity">
+                <h3>🛠️ Free Productivity Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-tasks"></i><a href="https://www.notion.so/" target="_blank">Notion</a></div>
+                    <div class="card"><i class="fas fa-tasks"></i><a href="https://trello.com/" target="_blank">Trello</a></div>
+                    <div class="card"><i class="fas fa-tasks"></i><a href="https://clockify.me/" target="_blank">Clockify</a></div>
+                    <div class="card"><i class="fas fa-tasks"></i><a href="https://workspace.google.com/" target="_blank">Google Workspace</a></div>
+                    <div class="card"><i class="fas fa-tasks"></i><a href="https://www.bigtimer.net/" target="_blank">BigTimer</a></div>
+                </div>
+                <p>Manage time, organize tasks, and stay productive.</p>
+            </div>
+
+            <div class="category-section" data-category="more">
+                <h3>🔗 More Tools</h3>
+                <div class="grid">
+                    <div class="card"><i class="fas fa-link"></i><a href="https://www.futuretools.io/" target="_blank">FutureTools.io</a></div>
+                </div>
+                <p>Explore even more resources for creators!</p>
+            </div>
+
+            <div class="category-section" id="closing-notes" data-category="closing">
+                <h2>Closing Notes</h2>
+                <p><strong>Congratulations on reaching the end of this resource collection! 🎉</strong></p>
+                <p>Our goal with this page is to empower creators like you with free, cutting-edge tools to simplify your journey. Every great creation starts with a spark—and the right resources to ignite it.</p>
+                <p>Keep exploring, experimenting, and creating. Always remember: <em>Your vision deserves to shine.</em> 🌟</p>
+                <h3>What’s Next? 🚀</h3>
+                <p>We’re constantly evolving this hub with the latest tools and insights. Here’s what’s coming soon:</p>
+                <ul>
+                    <li><strong>Exclusive Tutorials:</strong> Step-by-step guides to master these tools.</li>
+                    <li><strong>New Categories:</strong> Resources for branding, marketing, and advanced editing.</li>
+                    <li><strong>Community Contributions:</strong> Share your own tools and tips!</li>
+                </ul>
+                <p>Stay tuned—great things are on the horizon! Have ideas or resources to add? Reach out below.</p>
+                <p><strong>Happy Creating,</strong><br>Shubam Biswas - <em>Empowering Creators</em><br>Founder, CreaGuard<br><a href="mailto:shubambiswas846@gmail.com" class="glow-link">shubambiswas846@gmail.com</a></p>
+            </div>
+
+            <div class="cta">
+                <a href="https://example.com/waitlist">Join the Waitlist</a>
+                <a href="https://example.com/creaguard">Learn More About CreaGuard</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Powered by CreaGuard | <a href="https://laser-leopon-8f0.notion.site/Creator-s-Toolkit-Your-one-stop-solution-for-creative-success-Powered-by-CreaGuard-141044e641c380a5bf89c1655421de9b?pvs=4">Visit Our Notion Hub</a></p>
+    </footer>
+
+    <a href="#" class="back-to-top">↑</a>
+
+    <script>
+        function searchTools() {
+            let input = document.getElementById('search').value.toLowerCase();
+            let cards = document.getElementsByClassName('card');
+            for (let i = 0; i < cards.length; i++) {
+                let text = cards[i].textContent.toLowerCase();
+                cards[i].style.display = text.includes(input) ? '' : 'none';
+            }
+        }
+
+        function filterCategory(category) {
+            let sections = document.getElementsByClassName('category-section');
+            for (let i = 0; i < sections.length; i++) {
+                let dataCategory = sections[i].getAttribute('data-category');
+                sections[i].style.display = (category === 'all' || dataCategory === category) ? '' : 'none';
+            }
+        }
+    </script>
+</body>
+</html>
