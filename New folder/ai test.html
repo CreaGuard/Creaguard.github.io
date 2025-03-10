@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreaSist AI Orb</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: #000000; /* Fully pitch black background */
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto; /* Allow page to expand with text length */
+        }
+        .orb-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 20px;
+        }
+        .orb-wrapper {
+            position: relative;
+            width: 300px; /* Slightly bigger video size */
+            height: 250px; /* Slightly bigger video size */
+            overflow: hidden;
+        }
+        .orb-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out; /* Smooth transition for no lag */
+        }
+        .orb-video.active {
+            opacity: 1;
+        }
+        .orb-video iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .ai-name {
+            position: absolute;
+            top: -40px;
+            font-size: 24px;
+            color: #00ff66;
+            text-shadow: 0 0 15px rgba(0, 255, 102, 0.8);
+        }
+        .input-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 25px;
+            border: 1px solid #00ff66;
+            width: 70%;
+            max-width: 350px;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.3), inset 0 0 10px rgba(0, 255, 102, 0.1);
+        }
+        textarea {
+            flex-grow: 1;
+            height: 20px;
+            background: transparent;
+            border: none;
+            color: #00ff66;
+            padding: 0;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+        }
+        textarea::placeholder {
+            color: rgba(0, 255, 102, 0.5);
+            font-size: 14px;
+            content: "Type your query here...";
+        }
+        .send-btn, .stop-btn {
+            background: #00ff66;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            color: #0a0a0a;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+            box-shadow: 0 0 8px rgba(0, 255, 102, 0.5);
+        }
+        .send-btn:hover, .stop-btn:hover {
+            background: #00cc52;
+        }
+        .stop-btn {
+            background: #ff4d4d;
+            color: #fff;
+        }
+        .stop-btn:hover {
+            background: #e60000;
+        }
+        .response {
+            width: 80%; /* Extended width */
+            max-width: 800px; /* Allow more text width */
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(0, 255, 102, 0.05);
+            font-size: 16px;
+            line-height: 1.6;
+            text-align: center; /* Center-aligned text */
+            white-space: pre-wrap;
+            border: 1px solid #00ff66;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+            font-family: 'Orbitron', sans-serif;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .typing {
+            color: #00ff66;
+            font-style: italic;
+            opacity: 0.8;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+        .thinking {
+            color: #00ff66;
+            font-style: italic;
+            opacity: 0.8;
+        }
+        @keyframes dotAnimation {
+            0% { content: "Thinking"; }
+            25% { content: "Thinking."; }
+            50% { content: "Thinking.."; }
+            75% { content: "Thinking..."; }
+            100% { content: "Thinking"; }
+        }
+        .thinking::after {
+            content: "Thinking";
+            animation: dotAnimation 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="orb-container">
+        <div class="ai-name">CreaSist</div>
+        <div class="orb-wrapper">
+            <!-- Thinking Video -->
+            <div id="thinking-video" class="orb-video active">
+                <iframe src="https://player.vimeo.com/video/1064279790?h=c830749a90&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&muted=1&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" title="Thinking Orb"></iframe>
+            </div>
+            <!-- Delivery Video -->
+            <div id="delivery-video" class="orb-video">
+                <iframe src="https://player.vimeo.com/video/1064279747?h=dd861b9969&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=0&loop=0&muted=1&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" title="Delivery Orb"></iframe>
+            </div>
+        </div>
+        <div class="input-bar">
+            <textarea id="userInput" placeholder="Type your query here..."></textarea>
+            <button class="send-btn" id="sendButton" onclick="sendMessage()">•</button>
+        </div>
+        <div class="response" id="responseBox"></div>
+    </div>
+
+    <script src="https://player.vimeo.com/api/player.js"></script>
+    <script>
+        let thinkingPlayer, deliveryPlayer;
+        let typingTimeout;
+        let stopRequested = false;
+
+        // Initialize Vimeo Players
+        window.onload = function() {
+            // Initialize Thinking Video Player
+            const thinkingIframe = document.querySelector('#thinking-video iframe');
+            thinkingPlayer = new Vimeo.Player(thinkingIframe);
+            thinkingPlayer.setVolume(0); // Ensure muted
+            thinkingPlayer.play(); // Start playing thinking video on load
+
+            // Initialize Delivery Video Player
+            const deliveryIframe = document.querySelector('#delivery-video iframe');
+            deliveryPlayer = new Vimeo.Player(deliveryIframe);
+            deliveryPlayer.setVolume(0); // Ensure muted
+        };
+
+        function startThinkingAnimation() {
+            document.querySelector('#thinking-video').classList.add('active');
+            document.querySelector('#delivery-video').classList.remove('active');
+            thinkingPlayer.play();
+            deliveryPlayer.pause();
+        }
+
+        function deliverAnimation() {
+            document.querySelector('#delivery-video').classList.add('active');
+            document.querySelector('#thinking-video').classList.remove('active');
+            thinkingPlayer.pause();
+            deliveryPlayer.play();
+            deliveryPlayer.on('ended', function() {
+                document.querySelector('#delivery-video').classList.remove('active');
+                document.querySelector('#thinking-video').classList.add('active');
+                thinkingPlayer.play();
+            });
+        }
+
+        function stopTyping() {
+            stopRequested = true;
+            clearTimeout(typingTimeout);
+            if (document.getElementById("responseBox").innerHTML.includes("Thinking")) {
+                document.getElementById("responseBox").innerHTML = "";
+            }
+            document.getElementById("sendButton").classList.remove("stop-btn");
+            document.getElementById("sendButton").classList.add("send-btn");
+            document.getElementById("sendButton").innerHTML = "•";
+            startThinkingAnimation(); // Switch back to thinking video
+        }
+
+        async function sendMessage() {
+            stopRequested = false;
+            const userMessage = document.getElementById("userInput").value.trim();
+            if (userMessage === "") return;
+            document.getElementById("userInput").value = "";
+            const responseBox = document.getElementById("responseBox");
+            responseBox.innerHTML = "<span class='thinking'></span>";
+            const sendButton = document.getElementById("sendButton");
+            sendButton.classList.remove("send-btn");
+            sendButton.classList.add("stop-btn");
+            sendButton.innerHTML = "✖";
+
+            deliverAnimation(); // Switch to delivery video when query is sent
+
+            const trainingData = `
+Creator’s Toolkit - Powered by CreaGuard
+Overview:
+The Creator’s Toolkit is a curated collection of essential tools and resources designed to help digital creators streamline their workflow and enhance productivity. It categorizes tools into sections for graphic designers, video editors, content creators, freelancers, and individuals willing to express creativity.
+
+Navigation & Features:
+- Search Bar: Users can search tools by category.
+- Filters: Quick access to AI Tools, Video Tools, Graphic Design Tools, etc.
+- Floating AI Assistant: Helps users find tools based on workflow needs and guides them on using website resources.
+- Dark/Light Mode: Customizable UI.
+- Analytics Tracking: Gathers insights on user searches for better recommendations.
+
+CreaGuard: The Guardian of Creativity 🚀🎨
+CreaGuard isn’t just a startup—it’s a revolution for creators. We exist to empower artists, designers, writers, and innovators by providing free tools, resources, and a thriving community.
+- Not just a brand, but a movement.
+- Not just a platform, but a guardian of creativity.
+- Not just a team, but a league of visionaries.
+At CreaGuard, we guide, protect, and elevate those who dare to think differently, create fearlessly, and push the boundaries of imagination. We are a family of like-minded, creative minds shaping the future—together.
+✨ CreaGuard is where ideas take flight, where passion meets purpose, and where creators find their true power.
+Welcome to the future of creativity. Welcome to CreaGuard.
+
+Key Tool Categories & Examples:
+🤖 Free AI Idea Generation & Brainstorming Tools:
+- ChatGPT: Best for brainstorming and idea generation (e.g., "Give me 5 wild video ideas").
+- Copy.ai: Best for innovative and creative writing (e.g., "Write a sassy tweet").
+- DeepAI: One-stop solution for scripts, images, music, videos (e.g., "Generate a sci-fi poster").
+- Rytr: Generates content in your voice (e.g., "Write a chill email").
+- Simplified: All-in-one marketing app.
+
+💡 Free Idea Generation & Brainstorming Tools (Storyboarding):
+- Miro: Ideation visualization and collaboration (e.g., "Map a campaign").
+- Coggel: Mind maps for creatives (e.g., "Map my next blog post").
+- Milanote: Visual organization for creatives (e.g., "Mood board for a film").
+- MindMeister: Mind mapping for ideas (e.g., "Podcast topics").
+- Stormboard: Collaborative whiteboard (e.g., "Plan a video shoot").
+
+🤖 AI-Powered Research Tools & Platforms:
+- AlsoAsked.com: SEO tool for related Google questions (e.g., "video editing").
+- AnswerThePublic.com: SEO research for search queries (e.g., "graphic design").
+- Perplexity AI: AI search engine with cited answers (e.g., "Give me 5 video stats").
+- Grok AI: Witty chatbot for real-time insights (e.g., "What’s hot on X?").
+- Google Scholar: Academic research (e.g., "AI in video editing").
+- Wayback Machine: Archive of old websites.
+- Consensus: Summarizes peer-reviewed papers.
+- Scholar GPT: Academic research assistant.
+- SciSpace: AI tool for analyzing scientific papers.
+
+📝 Scripting Tools:
+- Squibler AI Script Generator: For video/movie scripts (e.g., "Write a 1-minute ad script").
+- Grammarly: Enhances grammar and style (e.g., "Polish my script").
+- Write For Me (ChatGPT): Generates scripts (e.g., "Make a goofy ad script").
+- Toolbaz AI Script Generator: Creates dialogues.
+
+📝 Content & Writing:
+- Grammarly: Grammar and style enhancer.
+- Rytr: Content generation.
+- Squibler: Script generator.
+- Copy.ai: Creative writing.
+
+🎨 Free AI Image Generation Tools:
+- Glif: Generative art (e.g., "Neon city art").
+- DeepDream Generator: Dream-like artworks.
+- Google Image FX: Artistic images.
+- Leonardo AI: High-quality visuals (e.g., "Photorealistic portrait").
+- PicLumen: Concept art.
+- Microsoft Designer: Social media graphics.
+- Ideogram: Artistic typography.
+- Meta AI: Visual concepts.
+- Lexica: Photorealistic images.
+- Adobe Firefly: Artwork generation.
+- CocoClip AI: Image generation.
+- AIEase: Artistic designs.
+- Clipdrop: Background remover.
+- SmailPro: Temp email for free credits.
+
+🎥 Free AI Image-to-Video Generation Tools:
+- Pictory: Image/text to video (e.g., "Make a slideshow").
+- RunwayML: Video generation/editing (e.g., "Animate this poster").
+- Kaiber: Animates images.
+- DeepMotion: Motion capture.
+- Animoto: Slideshow videos.
+- Krea AI: Artistic videos.
+- Luma Labs Dream Machine: Realistic video generation.
+- Hailuo AI: Animation.
+- Pikart AI: Visual storytelling.
+- Kling AI: Animated sequences.
+- Haiper: High-resolution videos.
+- Pixverse: Cinematic transformations.
+- FutureTools Generative Video: Curated tools.
+- Vidful AI: Video ads.
+- Coverr Kling: Dynamic footage.
+
+🎙️ Free AI Tools for Script-to-Voiceover:
+- ElevenLabs: Natural voiceovers (e.g., "Podcast intro").
+- Speechify: Text-to-speech.
+- DesiVocal: Indian-accented voiceovers.
+- NaturalReaders: Lifelike speech.
+- Resemble AI: Voice cloning.
+- Play.ht: Realistic voices.
+- Murf AI: Studio-quality narration (e.g., "15-second ad script").
+
+🖼️ Stock Videos & Images (License Free):
+- Unsplash: Free stock images.
+- Pexels: Photos and videos.
+- Pixabay: Images, videos, music.
+- Kaboompics: High-resolution images.
+- FreeImages: Royalty-free images.
+- Life of Pix: Free photography.
+- Lummi: Curated stock images.
+- TextureLabs: Textures/overlays.
+
+🎥 Free Stock Videos & Footage (Copyright Free):
+- Mixkit: Stock videos/music.
+- Videvo: Motion graphics.
+- Coverr: Royalty-free videos.
+- Freepik: Videos/images.
+- Vidsplay: HD stock videos.
+- Mazwai: Cinematic videos.
+- Dareful: 4K footage.
+- Videezy: Video clips.
+- Pikwizard: Stock videos/images.
+- SlidesCarnival: Presentation templates.
+- Flaticon: Icons.
+- Icons8: Design assets.
+- The Noun Project: Icons/symbols.
+
+🎵 Free Music & Sound Effects (Royalty Free):
+- Pixabay Music: Free tracks.
+- Free Music Archive: Music across genres.
+- Freesound: Sound effects.
+- Chosic: Background scores.
+- Bensound: Royalty-free music.
+- CreatorMix: Background music.
+- Uppbeat: Attribution-free music.
+- ZapSplat: Sound effects/music.
+- NCS (NoCopyrightSounds): Electronic music.
+- Incompetech: Instrumental music.
+
+🎬 Free Video Editing Tools:
+- DaVinci Resolve: Professional editing.
+- CapCut: Social media edits (e.g., "Trim my TikTok").
+- HitFilm: Video editing/VFX.
+- FlexClip: Online editor.
+- Clipchamp: Web-based editor.
+- Eyecandy: Visual technique library.
+
+🎧 Free Audio Editing Tools:
+- Audacity: Audio editing (e.g., "Clean noise").
+- Adobe Podcast Enhance: Noise removal.
+- BandLab: Cloud-based DAW.
+- Looperman: Loops/samples.
+- Suno AI: Music generator.
+- MusicGen (Hugging Face): Music from text.
+
+🖌️ Free Graphic Design Tools:
+- Canva: Social media/presentations (e.g., "YouTube thumb").
+- Photopea: Photoshop alternative (e.g., "Fix this selfie").
+- Crello (VistaCreate): Templates.
+- Figma: UI/UX design.
+- The Grid System: Layout structuring.
+- Remove.bg: Background remover.
+- Coolors: Color palettes.
+- Colour Contrast: Accessibility checker.
+- Color Hunt: Trendy palettes.
+- Canva Color Wheel: Color combinations.
+- Uncut: Design elements.
+- Shots.so: Mockups.
+- AIEase: Graphic design assistant.
+- ThumbsUp: YouTube thumbnails.
+- Branding Style Guides: Branding guidelines.
+- Pinterest: Design inspiration.
+
+📂☁️ Best Free Cloud Storage Platforms:
+- Playbook: Storage for creatives.
+- Google Drive: 15GB free.
+- Dropbox: File sharing.
+- OneDrive: Microsoft integration.
+- Box: Secure storage.
+- pCloud: 10GB free.
+- Mega: 20GB free (e.g., "Secure backups").
+- Yandex Disk: 10GB free.
+- Icedrive: Fast access.
+- TeraBox: 1TB free.
+- MediaFire: 10GB free.
+- Degoo: 100GB free.
+
+🔍 SEO Tools:
+- Keyword Tool: Long-tail keywords.
+- Ubersuggest: Keyword/competitor analysis.
+- Yoast SEO: WordPress optimization.
+- Moz: SEO audits.
+- TubeRanker: YouTube SEO.
+- TunePocket YouTube Tags Inspector: Tag analysis.
+- TubeRanker Tag Extractor: Tag extraction.
+
+📊 Analytics Tools:
+- Google Trends: Search trends (e.g., "AI art").
+- YouTube Studio: Video analytics.
+- SocialBlade: Social media stats.
+- Google Search Console: Website performance.
+- VidIQ: YouTube analytics.
+
+💬 Free Social Media Management Tools:
+- Buffer: Scheduling (e.g., "Queue a Canva post").
+- Hootsuite: Multiple accounts.
+- Zoho Social: Marketing dashboard.
+- Later: Visual scheduler.
+- TweetDeck: Twitter management.
+- TubeBuddy: YouTube growth.
+- SocialBee: Automated posting.
+
+🤝 Free Collaboration Tools:
+- Trello: Task management (e.g., "Film Shoot").
+- Slack: Team communication.
+- Google Workspace: Docs/Sheets.
+- Asana: Project management.
+- Notion: All-in-one workspace (e.g., "Script outline").
+- Discord: Community platform.
+- Microsoft Teams: Business communication.
+
+🌐 Free Website Builders:
+- Carrd: One-page sites (e.g., "Creator landing page").
+- Wix: Drag-and-drop builder.
+- Google Sites: Free hosting.
+- WordPress.com: Blogging.
+- Weebly: E-commerce.
+- Canva Website Builder: Visually appealing sites.
+- Odoo Website: Business sites.
+- DeepSeek: AI website builder.
+- Blackbox AI: AI design.
+- Google AI Studio: Web-based AI apps.
+- Grok: Content enhancement.
+
+🛠️ Free Productivity Tools:
+- Notion: Note-taking.
+- Trello: Task organization.
+- Clockify: Time tracking (e.g., "Track editing hours").
+- Google Workspace: Collaboration.
+- BigTimer: Countdown timer.
+
+Workflows:
+🎬 Workflow 1: Creating a YouTube Video:
+- Step 1: Idea Generation & Research: ChatGPT, Perplexity AI, Grok AI (alternative to Perplexity), AnswerThePublic.
+- Step 2: Scripting & Voiceover: Squibler AI, Write For Me (ChatGPT), Grammarly, ElevenLabs, DeepAI/MusicGen (BGM).
+- Step 3: Visuals & Video Editing: Pexels/Pixabay, Leonardo AI/Adobe Firefly, RunwayML, DaVinci Resolve/CapCut.
+- Step 4: SEO & Upload: TubeBuddy/VidIQ, YouTube Studio.
+
+🎨 Workflow 2: Designing a Social Media Post:
+- Step 1: Concept & Inspiration: Milanote/MindMeister, Pinterest.
+- Step 2: Image Creation: Adobe Firefly/Leonardo AI, Remove.bg, Coolors, TextureLabs, Flaticon/Freepik.
+- Step 3: Designing the Post: Canva/Crello, ThumbsUp, Photopea.
+- Step 4: Scheduling & Engagement: Buffer/Hootsuite, Google Trends.
+
+🎶 Workflow 3: Producing a Podcast:
+- Step 1: Planning & Research: ChatGPT, Perplexity AI.
+- Step 2: Scripting & Recording: Grammarly, Adobe Podcast Enhance, Play.ht/Murf AI.
+- Step 3: Editing & Publishing: Audacity/BandLab, Freesound/ZapSplat, Google Drive/Mega.
+
+📸 Workflow 4: Building a Portfolio Website:
+- Step 1: Website Design & Inspiration: Figma/The Grid System, Pinterest.
+- Step 2: Website Creation: Carrd/Wix/WordPress, Canva Website Builder.
+- Step 3: Enhancing & Hosting: Icons8/Flaticon, Google Sites/Playbook.
+`;
+
+            const payload = {
+                model: "google/gemini-2.0-pro-exp-02-05:free",
+                messages: [
+                    { role: "system", content: `You are CreaSist, a concise and helpful AI assistant powered by CreaGuard. Your primary goal is to assist digital creators by recommending free tools and resources from the Creator’s Toolkit. Use the following training data:\n\n${trainingData}\n\nFormat responses with clear paragraphs, numbered lists, and bullet points using green checkmarks (✅).` },
+                    { role: "user", content: userMessage }
+                ],
+                max_tokens: 1000
+            };
+
+            try {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer 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"
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+
+                if (!data || !data.choices || !data.choices.length || !data.choices[0].message) {
+                    responseBox.innerHTML = "Error: Invalid response from AI.";
+                    stopTyping();
+                    return;
+                }
+
+                const fullResponse = data.choices[0].message.content;
+                responseBox.innerHTML = "";
+                let index = 0;
+                function typeEffect() {
+                    if (stopRequested) return;
+                    if (index < fullResponse.length) {
+                        responseBox.innerHTML = fullResponse.substring(0, index + 1).replace(/\n/g, "<br>");
+                        index++;
+                        typingTimeout = setTimeout(typeEffect, 20); // Typing speed of 20ms
+                    } else {
+                        stopTyping();
+                        startThinkingAnimation(); // Switch back to thinking video
+                    }
+                }
+                typeEffect();
+            } catch (error) {
+                responseBox.innerHTML = "Error: " + error.message;
+                stopTyping();
+            }
+        }
+
+        document.getElementById("userInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Stop button functionality
+        document.getElementById("sendButton").addEventListener("click", function() {
+            if (this.classList.contains("stop-btn")) {
+                stopTyping();
+                clearTimeout(typingTimeout); // Ensure any pending timeouts are cleared
+            }
+        });
+    </script>
+</body>
+</html>
